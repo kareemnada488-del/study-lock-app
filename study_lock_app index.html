@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Lock - Focus & Learn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: float 15s infinite;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100px) rotate(180deg); }
+        }
+
+        .container {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 30px;
+            padding: 45px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 50px rgba(138, 43, 226, 0.3);
+            position: relative;
+            z-index: 10;
+            animation: slideIn 0.5s ease-out;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.5));
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.6), 0 0 30px rgba(219, 39, 119, 0.4);
+            animation: bounce 2s infinite;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a0aec0;
+            margin-bottom: 35px;
+            font-size: 1.15em;
+            line-height: 1.6;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+            font-weight: 700;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 18px;
+            padding-right: 50px;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 15px;
+            font-size: 1.05em;
+            transition: all 0.3s;
+            background: rgba(30, 30, 46, 0.8);
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #a78bfa;
+            background: rgba(40, 40, 60, 0.9);
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2), 0 0 30px rgba(167, 139, 250, 0.3);
+            transform: translateY(-2px);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            padding-right: 50px;
+            background-color: rgba(30, 30, 46, 0.8);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #e2e8f0;
+            padding: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.25em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5), 0 0 40px rgba(219, 39, 119, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(124, 58, 237, 0.7), 0 0 50px rgba(219, 39, 119, 0.5);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .timer-circle {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            position: relative;
+            filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.5));
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle-bg {
+            fill: none;
+            stroke: rgba(30, 30, 46, 0.8);
+            stroke-width: 12;
+        }
+
+        .timer-circle-progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+            filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.8));
+        }
+
+        .time {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.6));
+        }
+
+        .time-label {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9em;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .study-info {
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.5), 0 0 30px rgba(219, 39, 119, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .study-info h3 {
+            margin-bottom: 8px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .study-info p {
+            opacity: 0.95;
+            font-size: 1.05em;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(219, 39, 119, 0.2) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.5));
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #a0aec0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .motivational-message {
+            text-align: center;
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 25px 0;
+            padding: 20px;
+            background-color: rgba(124, 58, 237, 0.15);
+            border-radius: 15px;
+            animation: pulse 2s infinite;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(167, 139, 250, 0.2); }
+            50% { transform: scale(1.02); box-shadow: 0 0 40px rgba(167, 139, 250, 0.4); }
+        }
+
+        .lock-icon {
+            text-align: center;
+            font-size: 6em;
+            margin: 20px 0;
+            animation: lockPulse 3s infinite;
+            filter: drop-shadow(0 10px 30px rgba(124, 58, 237, 0.6)) drop-shadow(0 0 50px rgba(219, 39, 119, 0.4));
+        }
+
+        @keyframes lockPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+
+        .quiz-question {
+            background: linear-gradient(135deg, rgba(30, 30, 46, 0.9) 0%, rgba(40, 40, 60, 0.9) 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #a78bfa;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(167, 139, 250, 0.2);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .quiz-question h3 {
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 18px 20px;
+            background: rgba(30, 30, 46, 0.8);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.05em;
+            position: relative;
+            overflow: hidden;
+            color: #cbd5e0;
+        }
+
+        .quiz-option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #a78bfa;
+            background: rgba(40, 40, 60, 0.9);
+            transform: translateX(5px);
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.3);
+            color: #e2e8f0;
+        }
+
+        .quiz-option:hover::before {
+            transform: scaleY(1);
+        }
+
+        .quiz-option.selected {
+            border-color: #a78bfa;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 5px 30px rgba(124, 58, 237, 0.6), 0 0 40px rgba(219, 39, 119, 0.4);
+        }
+
+        .quiz-option.selected::before {
+            transform: scaleY(1);
+            background: white;
+        }
+
+        .result-message {
+            text-align: center;
+            padding: 25px;
+            border-radius: 20px;
+            margin: 25px 0;
+            font-size: 1.3em;
+            font-weight: 700;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .result-message.correct {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%);
+            color: #6ee7b7;
+            border: 2px solid #10b981;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .result-message.incorrect {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.3) 100%);
+            color: #fca5a5;
+            border: 2px solid #ef4444;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4), 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 10px;
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed 0%, #db2777 100%);
+            width: 0%;
+            transition: width 1s linear;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .emoji {
+            font-size: 4em;
+            text-align: center;
+            margin: 25px 0;
+            animation: emojiPop 0.5s ease-out;
+            filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+        }
+
+        @keyframes emojiPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3), 0 0 30px rgba(251, 191, 36, 0.2);
+        }
+
+        .tips-section h4 {
+            color: #fcd34d;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .tips-section p {
+            color: #cbd5e0;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin: 5px;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5), 0 0 30px rgba(219, 39, 119, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-icon">📚</div>
+        <h1>Study Lock</h1>
+        <p class="subtitle">Focus on learning, unlock with knowledge! Build better study habits one session at a time.</p>
+
+        <!-- Setup Screen -->
+        <div id="setupScreen" class="screen active">
+            <div class="tips-section">
+                <h4>💡 How it works</h4>
+                <p>Choose your subject, set your timer, and focus! When time's up, prove you studied by answering a question correctly to unlock your phone.</p>
+            </div>
+
+            <div class="tips-section" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(219, 39, 119, 0.2) 100%); border-left: 5px solid #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3);">
+                <h4>📖 Study Tips</h4>
+                <p>✓ Find a quiet place • ✓ Take notes while studying • ✓ Review regularly • ✓ Stay hydrated • ✓ Take breaks between sessions</p>
+            </div>
+
+            <label for="subject">📖 What are you studying today?</label>
+            <div class="input-group">
+                <select id="subject">
+                    <option value="math">📐 Mathematics</option>
+                    <option value="science">🔬 Science</option>
+                    <option value="history">📜 History</option>
+                    <option value="english">📖 English</option>
+                    <option value="geography">🌍 Geography</option>
+                    <option value="computer">💻 Computer Science</option>
+                    <option value="physics">⚛️ Physics</option>
+                    <option value="chemistry">🧪 Chemistry</option>
+                    <option value="biology">🧬 Biology</option>
+                    <option value="economics">💰 Economics</option>
+                    <option value="psychology">🧠 Psychology</option>
+                    <option value="art">🎨 Art & Design</option>
+                    <option value="music">🎵 Music</option>
+                    <option value="literature">📚 Literature</option>
+                    <option value="philosophy">💭 Philosophy</option>
+                    <option value="sociology">👥 Sociology</option>
+                    <option value="astronomy">🌌 Astronomy</option>
+                    <option value="medicine">⚕️ Medicine</option>
+                    <option value="law">⚖️ Law</option>
+                    <option value="engineering">⚙️ Engineering</option>
+                </select>
+            </div>
+
+            <label for="difficulty">🎯 Difficulty Level</label>
+            <div class="input-group">
+                <select id="difficulty">
+                    <option value="easy">😊 Easy - Basic questions</option>
+                    <option value="medium">🤔 Medium - Moderate challenge</option>
+                    <option value="hard">🔥 Hard - Expert level</option>
+                </select>
+            </div>
+
+            <label for="studyTime">⏰ How long will you study? (minutes)</label>
+            <div class="input-group">
+                <input type="number" id="studyTime" placeholder="e.g., 30" min="1" max="240" value="30">
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px;">
+                <button type="button" onclick="setTime(15)" style="padding: 10px; font-size: 0.9em; background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(219, 39, 119, 0.3) 100%); border: 1px solid rgba(167, 139, 250, 0.3);">15m</button>
+                <button type="button" onclick="setTime(30)" style="padding: 10px; font-size: 0.9em; background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(219, 39, 119, 0.3) 100%); border: 1px solid rgba(167, 139, 250, 0.3);">30m</button>
+                <button type="button" onclick="setTime(45)" style="padding: 10px; font-size: 0.9em; background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(219, 39, 119, 0.3) 100%); border: 1px solid rgba(167, 139, 250, 0.3);">45m</button>
+                <button type="button" onclick="setTime(60)" style="padding: 10px; font-size: 0.9em; background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(219, 39, 119, 0.3) 100%); border: 1px solid rgba(167, 139, 250, 0.3);">60m</button>
+            </div>
+
+            <div class="stats-container" id="statsDisplay" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSessions">0</div>
+                    <div class="stat-label">Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalMinutes">0</div>
+                    <div class="stat-label">Minutes</div>
+                </div>
+            </div>
+
+            <div class="stats-container" id="streakDisplay" style="display: none; grid-template-columns: 1fr;">
+                <div class="stat-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%); border: 1px solid rgba(251, 191, 36, 0.4);">
+                    <div class="stat-value" id="studyStreak" style="background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</div>
+                    <div class="stat-label" style="color: #fde68a;">🔥 Day Streak</div>
+                </div>
+            </div>
+
+            <button onclick="startStudySession()">🚀 Start Study Session</button>
+        </div>
+
+        <!-- Study Session Screen -->
+        <div id="studyScreen" class="screen">
+            <div class="lock-icon">🔒</div>
+            <div class="study-info">
+                <h3>📚 Studying: <span id="currentSubject"></span></h3>
+                <p>Stay focused! Your phone is locked until the timer ends.</p>
+            </div>
+
+            <div class="timer-display">
+                <div class="timer-circle">
+                    <svg class="timer-svg" width="250" height="250">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="timer-circle-bg" cx="125" cy="125" r="110"></circle>
+                        <circle class="timer-circle-progress" id="timerCircle" cx="125" cy="125" r="110"></circle>
+                    </svg>
+                    <div class="time" id="timerDisplay">00:00</div>
+                    <div class="time-label">remaining</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div class="motivational-message" id="motivationalMsg">
+                You're doing great! Keep studying! 💪
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="screen">
+            <div class="emoji">🎯</div>
+            <h2 style="text-align: center; margin-bottom: 25px; color: #e2e8f0; font-size: 1.8em; text-shadow: 0 0 30px rgba(167, 139, 250, 0.5);">Time to prove you studied!</h2>
+            
+            <div class="quiz-question">
+                <h3 id="questionText"></h3>
+                <div class="quiz-options" id="optionsContainer"></div>
+            </div>
+
+            <button onclick="submitAnswer()" id="submitBtn">✅ Submit Answer</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="screen">
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <!-- Background particles -->
+    <script>
+        // Create animated background particles
+        for(let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 60 + 20 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.background = Math.random() > 0.5 ? 
+                'linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)' : 
+                'linear-gradient(135deg, #db2777 0%, #ec4899 100%)';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <script>
+        let studySubject = '';
+        let studyDifficulty = 'easy';
+        let studyDuration = 0;
+        let timerInterval = null;
+        let remainingSeconds = 0;
+        let selectedAnswer = null;
+        let currentQuestion = null;
+        let totalStudyTime = 0;
+
+        // Load stats from localStorage
+        function loadStats() {
+            const sessions = localStorage.getItem('studySessions') || 0;
+            const minutes = localStorage.getItem('studyMinutes') || 0;
+            document.getElementById('totalSessions').textContent = sessions;
+            document.getElementById('totalMinutes').textContent = minutes;
+            if (sessions > 0) {
+                document.getElementById('statsDisplay').style.display = 'grid';
+            }
+            
+            // Update streak
+            updateStreak();
+        }
+
+        // Update study streak
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const lastStudyDate = localStorage.getItem('lastStudyDate');
+            let streak = parseInt(localStorage.getItem('studyStreak') || 0);
+
+            if (lastStudyDate === today) {
+                // Already studied today
+                document.getElementById('studyStreak').textContent = streak;
+            } else {
+                // Check if it's consecutive day
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (lastStudyDate === yesterday.toDateString()) {
+                    // Consecutive day - increment streak
+                    streak++;
+                } else if (lastStudyDate !== today) {
+                    // Broke the streak
+                    streak = 0;
+                }
+                
+                document.getElementById('studyStreak').textContent = streak;
+            }
+
+            if (streak > 0) {
+                document.getElementById('streakDisplay').style.display = 'grid';
+            }
+        }
+
+        // Save stats to localStorage
+        function saveStats() {
+            const sessions = parseInt(localStorage.getItem('studySessions') || 0) + 1;
+            const minutes = parseInt(localStorage.getItem('studyMinutes') || 0) + studyDuration;
+            localStorage.setItem('studySessions', sessions);
+            localStorage.setItem('studyMinutes', minutes);
+
+            // Update streak
+            const today = new Date().toDateString();
+            const lastStudyDate = localStorage.getItem('lastStudyDate');
+            let streak = parseInt(localStorage.getItem('studyStreak') || 0);
+
+            if (lastStudyDate !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (lastStudyDate === yesterday.toDateString()) {
+                    streak++;
+                } else {
+                    streak = 1; // Start new streak
+                }
+                
+                localStorage.setItem('studyStreak', streak);
+                localStorage.setItem('lastStudyDate', today);
+            }
+        }
+
+        // Load stats on page load
+        window.onload = loadStats;
+
+        function setTime(minutes) {
+            document.getElementById('studyTime').value = minutes;
+        }
+
+        function checkAchievements() {
+            const sessions = parseInt(localStorage.getItem('studySessions') || 0);
+            const minutes = parseInt(localStorage.getItem('studyMinutes') || 0);
+            const streak = parseInt(localStorage.getItem('studyStreak') || 0);
+
+            // Check for session milestones
+            if (sessions === 1) return "🎯 First Session Complete!";
+            if (sessions === 5) return "⭐ 5 Sessions Milestone!";
+            if (sessions === 10) return "💎 10 Sessions Achieved!";
+            if (sessions === 25) return "🏅 25 Sessions Master!";
+            if (sessions === 50) return "👑 50 Sessions Champion!";
+            if (sessions === 100) return "🚀 100 Sessions Legend!";
+
+            // Check for time milestones (in hours)
+            const hours = Math.floor(minutes / 60);
+            if (hours === 1 && minutes >= 60 && minutes < 120) return "⏰ First Hour Completed!";
+            if (hours === 5 && minutes >= 300 && minutes < 360) return "🎓 5 Hours of Learning!";
+            if (hours === 10 && minutes >= 600 && minutes < 660) return "📚 10 Hours Scholar!";
+            if (hours === 25 && minutes >= 1500 && minutes < 1560) return "🌟 25 Hours Expert!";
+            if (hours === 50 && minutes >= 3000 && minutes < 3060) return "💫 50 Hours Pro!";
+            if (hours === 100 && minutes >= 6000 && minutes < 6060) return "🏆 100 Hours Elite!";
+
+            // Check for streak milestones
+            if (streak === 3) return "🔥 3 Day Streak!";
+            if (streak === 7) return "🔥 Week Streak!";
+            if (streak === 14) return "🔥 Two Week Streak!";
+            if (streak === 30) return "🔥 Month Streak!";
+
+            return null;
+        }
+
+        const questions = {
+            math: {
+                easy: [
+                    { q: "What is 15 + 27?", options: ["42", "40", "52", "32"], answer: 0 },
+                    { q: "What is 8 × 7?", options: ["54", "56", "64", "48"], answer: 1 },
+                    { q: "What is 100 ÷ 4?", options: ["20", "25", "30", "15"], answer: 1 },
+                    { q: "What is 12² (12 squared)?", options: ["124", "144", "134", "154"], answer: 1 },
+                    { q: "What is 50% of 80?", options: ["40", "30", "45", "35"], answer: 0 }
+                ],
+                medium: [
+                    { q: "What is 234 + 567?", options: ["801", "791", "811", "781"], answer: 0 },
+                    { q: "What is 15 × 13?", options: ["185", "195", "205", "175"], answer: 1 },
+                    { q: "What is the square root of 144?", options: ["11", "12", "13", "14"], answer: 1 },
+                    { q: "What is 35% of 200?", options: ["60", "65", "70", "75"], answer: 2 },
+                    { q: "If x + 5 = 12, what is x?", options: ["5", "6", "7", "8"], answer: 2 }
+                ],
+                hard: [
+                    { q: "Solve: 3x² - 12x + 12 = 0. What is x?", options: ["x = 1", "x = 2", "x = 3", "x = 4"], answer: 1 },
+                    { q: "What is the derivative of x³?", options: ["x²", "2x²", "3x²", "4x²"], answer: 2 },
+                    { q: "What is log₁₀(1000)?", options: ["2", "3", "4", "5"], answer: 1 },
+                    { q: "What is sin(90°)?", options: ["0", "1", "0.5", "-1"], answer: 1 },
+                    { q: "Calculate: ∫(2x)dx", options: ["x²", "x² + C", "2x²", "2x² + C"], answer: 1 }
+                ]
+            },
+            science: {
+                easy: [
+                    { q: "What is the chemical symbol for water?", options: ["H2O", "O2", "CO2", "H2"], answer: 0 },
+                    { q: "What planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
+                    { q: "What is the center of an atom called?", options: ["Electron", "Proton", "Nucleus", "Neutron"], answer: 2 },
+                    { q: "What gas do plants absorb from the atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], answer: 2 },
+                    { q: "What is the largest organ in the human body?", options: ["Heart", "Brain", "Liver", "Skin"], answer: 3 }
+                ],
+                medium: [
+                    { q: "What is the powerhouse of the cell?", options: ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], answer: 2 },
+                    { q: "What is the speed of sound approximately?", options: ["243 m/s", "343 m/s", "443 m/s", "543 m/s"], answer: 1 },
+                    { q: "What is the chemical formula for table salt?", options: ["NaCl", "KCl", "CaCl2", "MgCl"], answer: 0 },
+                    { q: "How many bones are in the adult human body?", options: ["196", "206", "216", "226"], answer: 1 },
+                    { q: "What is the pH of a neutral substance?", options: ["5", "6", "7", "8"], answer: 2 }
+                ],
+                hard: [
+                    { q: "What is the Heisenberg Uncertainty Principle about?", options: ["Energy conservation", "Position and momentum", "Wave-particle duality", "Time dilation"], answer: 1 },
+                    { q: "What is the primary function of ribosomes?", options: ["DNA replication", "Protein synthesis", "Energy production", "Cell division"], answer: 1 },
+                    { q: "What is Avogadro's number approximately?", options: ["6.02 × 10²²", "6.02 × 10²³", "6.02 × 10²⁴", "6.02 × 10²⁵"], answer: 1 },
+                    { q: "What type of bond shares electrons equally?", options: ["Ionic", "Polar covalent", "Nonpolar covalent", "Metallic"], answer: 2 },
+                    { q: "What is the SI unit of electric current?", options: ["Volt", "Ohm", "Ampere", "Watt"], answer: 2 }
+                ]
+            },
+            history: {
+                easy: [
+                    { q: "Who was the first President of the United States?", options: ["Thomas Jefferson", "George Washington", "Abraham Lincoln", "John Adams"], answer: 1 },
+                    { q: "In what year did World War II end?", options: ["1944", "1945", "1946", "1943"], answer: 1 },
+                    { q: "What was the ancient Egyptian writing system called?", options: ["Cuneiform", "Hieroglyphics", "Sanskrit", "Latin"], answer: 1 },
+                    { q: "Who built the Great Wall of China?", options: ["Japanese", "Mongols", "Chinese", "Koreans"], answer: 2 },
+                    { q: "What year did Christopher Columbus reach America?", options: ["1492", "1500", "1482", "1520"], answer: 0 }
+                ],
+                medium: [
+                    { q: "What was the main cause of WWI?", options: ["Assassination of Archduke Ferdinand", "Economic depression", "Religious conflicts", "Colonial disputes"], answer: 0 },
+                    { q: "Which empire was ruled by Julius Caesar?", options: ["Greek", "Roman", "Persian", "Ottoman"], answer: 1 },
+                    { q: "When did the French Revolution begin?", options: ["1776", "1789", "1799", "1804"], answer: 1 },
+                    { q: "Who wrote the Declaration of Independence?", options: ["George Washington", "Benjamin Franklin", "Thomas Jefferson", "John Adams"], answer: 2 },
+                    { q: "What year did the Berlin Wall fall?", options: ["1987", "1989", "1991", "1993"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What was the Treaty of Westphalia (1648) primarily about?", options: ["Ending WWI", "Ending Thirty Years' War", "American independence", "French Revolution"], answer: 1 },
+                    { q: "Who was the first female pharaoh of Egypt?", options: ["Cleopatra", "Nefertiti", "Hatshepsut", "Nefertari"], answer: 2 },
+                    { q: "What was the main goal of the Congress of Vienna?", options: ["Restore European monarchies", "End slavery", "Create democracy", "Form alliances"], answer: 0 },
+                    { q: "Which battle is considered the turning point of WWII?", options: ["Pearl Harbor", "Stalingrad", "Normandy", "Midway"], answer: 1 },
+                    { q: "What was the primary cause of the Opium Wars?", options: ["Territory", "Trade imbalance", "Religious freedom", "Naval supremacy"], answer: 1 }
+                ]
+            },
+            english: {
+                easy: [
+                    { q: "What is a noun?", options: ["Action word", "Person, place, or thing", "Describing word", "Connecting word"], answer: 1 },
+                    { q: "What is the plural of 'child'?", options: ["Childs", "Children", "Childes", "Childrens"], answer: 1 },
+                    { q: "Which word is a verb?", options: ["Happy", "Run", "Blue", "Book"], answer: 1 },
+                    { q: "What is a synonym for 'happy'?", options: ["Sad", "Angry", "Joyful", "Tired"], answer: 2 },
+                    { q: "What punctuation ends a question?", options: ["Period (.)", "Question mark (?)", "Exclamation (!)", "Comma (,)"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is an adjective?", options: ["Names a person", "Describes a noun", "Shows action", "Connects clauses"], answer: 1 },
+                    { q: "Which is a compound sentence?", options: ["I ran fast.", "I ran, and she walked.", "Although I ran.", "Running quickly."], answer: 1 },
+                    { q: "What is alliteration?", options: ["Repeated vowels", "Repeated consonants", "Similar endings", "Opposite meanings"], answer: 1 },
+                    { q: "What is the past tense of 'go'?", options: ["Goed", "Gone", "Went", "Going"], answer: 2 },
+                    { q: "What is an antonym of 'difficult'?", options: ["Hard", "Easy", "Complex", "Tough"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is a gerund?", options: ["Past participle", "Verb acting as noun", "Adjective phrase", "Subordinate clause"], answer: 1 },
+                    { q: "What is the subjunctive mood used for?", options: ["Commands", "Hypothetical situations", "Past events", "Present facts"], answer: 1 },
+                    { q: "Which literary device is 'The stars danced'?", options: ["Simile", "Metaphor", "Personification", "Hyperbole"], answer: 2 },
+                    { q: "What is an Oxford comma?", options: ["Comma before 'and' in a list", "Comma after introduction", "Comma in dates", "Comma in addresses"], answer: 0 },
+                    { q: "What is a dangling modifier?", options: ["Extra adjective", "Misplaced descriptive phrase", "Redundant word", "Missing subject"], answer: 1 }
+                ]
+            },
+            geography: {
+                easy: [
+                    { q: "What is the largest ocean on Earth?", options: ["Atlantic", "Pacific", "Indian", "Arctic"], answer: 1 },
+                    { q: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Rome"], answer: 2 },
+                    { q: "How many continents are there?", options: ["5", "6", "7", "8"], answer: 2 },
+                    { q: "What is the longest river in the world?", options: ["Amazon", "Nile", "Yangtze", "Mississippi"], answer: 1 },
+                    { q: "Which country is home to the kangaroo?", options: ["New Zealand", "Australia", "South Africa", "Brazil"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is the capital of Canada?", options: ["Toronto", "Ottawa", "Montreal", "Vancouver"], answer: 1 },
+                    { q: "Which desert is the largest in the world?", options: ["Sahara", "Arabian", "Gobi", "Antarctica"], answer: 3 },
+                    { q: "What mountain range separates Europe and Asia?", options: ["Alps", "Himalayas", "Ural", "Andes"], answer: 2 },
+                    { q: "What is the smallest country in the world?", options: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"], answer: 1 },
+                    { q: "Which river flows through Egypt?", options: ["Amazon", "Nile", "Congo", "Niger"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the most densely populated country?", options: ["Bangladesh", "Monaco", "Singapore", "Hong Kong"], answer: 1 },
+                    { q: "What is the Ring of Fire?", options: ["Desert region", "Volcanic belt", "Ocean current", "Mountain range"], answer: 1 },
+                    { q: "Which strait separates Europe and Africa?", options: ["Bering", "Gibraltar", "Hormuz", "Malacca"], answer: 1 },
+                    { q: "What is the capital of Kazakhstan?", options: ["Almaty", "Astana (Nur-Sultan)", "Bishkek", "Tashkent"], answer: 1 },
+                    { q: "What percentage of Earth's surface is water?", options: ["61%", "71%", "81%", "91%"], answer: 1 }
+                ]
+            },
+            computer: {
+                easy: [
+                    { q: "What does CPU stand for?", options: ["Computer Personal Unit", "Central Processing Unit", "Central Program Utility", "Computer Processing Unit"], answer: 1 },
+                    { q: "What does HTML stand for?", options: ["HyperText Markup Language", "HighText Machine Language", "HyperTool Multi Language", "Home Tool Markup Language"], answer: 0 },
+                    { q: "What is 1 + 1 in binary?", options: ["2", "10", "11", "01"], answer: 1 },
+                    { q: "What is the brain of the computer called?", options: ["RAM", "CPU", "Hard Drive", "Monitor"], answer: 1 },
+                    { q: "What does RAM stand for?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Run Access Memory"], answer: 0 }
+                ],
+                medium: [
+                    { q: "What is an algorithm?", options: ["A programming language", "Step-by-step procedure", "Computer hardware", "Software application"], answer: 1 },
+                    { q: "What does SQL stand for?", options: ["Standard Query Language", "Structured Query Language", "Simple Query Language", "System Query Language"], answer: 1 },
+                    { q: "What is the time complexity of binary search?", options: ["O(n)", "O(log n)", "O(n²)", "O(1)"], answer: 1 },
+                    { q: "What is a variable in programming?", options: ["Fixed value", "Storage location", "Function", "Loop"], answer: 1 },
+                    { q: "What does API stand for?", options: ["Application Programming Interface", "Advanced Programming Interface", "Application Process Integration", "Automated Programming Interface"], answer: 0 }
+                ],
+                hard: [
+                    { q: "What is the difference between stack and heap memory?", options: ["Size only", "Stack is automatic, heap is dynamic", "No difference", "Speed only"], answer: 1 },
+                    { q: "What is polymorphism in OOP?", options: ["Multiple forms of same entity", "Data hiding", "Inheritance", "Encapsulation"], answer: 0 },
+                    { q: "What is Big O notation used for?", options: ["Memory size", "Algorithm efficiency", "Code length", "Variable naming"], answer: 1 },
+                    { q: "What is a deadlock in operating systems?", options: ["Process waiting indefinitely", "Memory overflow", "CPU overload", "Disk failure"], answer: 0 },
+                    { q: "What is the CAP theorem about?", options: ["Programming paradigms", "Distributed systems", "Database normalization", "Network protocols"], answer: 1 }
+                ]
+            },
+            physics: {
+                easy: [
+                    { q: "What is the speed of light?", options: ["300,000 km/s", "150,000 km/s", "450,000 km/s", "200,000 km/s"], answer: 0 },
+                    { q: "What force keeps us on the ground?", options: ["Magnetism", "Gravity", "Friction", "Inertia"], answer: 1 },
+                    { q: "What is the unit of force?", options: ["Joule", "Watt", "Newton", "Pascal"], answer: 2 },
+                    { q: "What does E=mc² relate to?", options: ["Energy and mass", "Electricity and current", "Evolution and mutation", "Elements and compounds"], answer: 0 },
+                    { q: "What type of energy does a moving object have?", options: ["Potential", "Kinetic", "Thermal", "Chemical"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is Newton's first law?", options: ["F=ma", "Object in motion stays in motion", "Action-reaction", "Universal gravitation"], answer: 1 },
+                    { q: "What is the unit of power?", options: ["Joule", "Watt", "Newton", "Volt"], answer: 1 },
+                    { q: "What is the acceleration due to gravity?", options: ["8.8 m/s²", "9.8 m/s²", "10.8 m/s²", "11.8 m/s²"], answer: 1 },
+                    { q: "What is Ohm's Law?", options: ["V=IR", "F=ma", "E=mc²", "P=IV"], answer: 0 },
+                    { q: "What type of wave is sound?", options: ["Electromagnetic", "Transverse", "Longitudinal", "Standing"], answer: 2 }
+                ],
+                hard: [
+                    { q: "What is Planck's constant approximately?", options: ["6.63 × 10⁻³⁴ J·s", "6.63 × 10⁻²³ J·s", "6.63 × 10⁻⁴⁴ J·s", "6.63 × 10⁻¹⁴ J·s"], answer: 0 },
+                    { q: "What is the Schrödinger equation used for?", options: ["Classical mechanics", "Quantum mechanics", "Thermodynamics", "Relativity"], answer: 1 },
+                    { q: "What is entropy?", options: ["Energy transfer", "Disorder measure", "Temperature", "Pressure"], answer: 1 },
+                    { q: "What is the Doppler effect?", options: ["Light bending", "Frequency change due to motion", "Wave interference", "Energy conservation"], answer: 1 },
+                    { q: "What is the uncertainty principle?", options: ["Cannot know position and momentum precisely", "Energy is uncertain", "Time is relative", "Mass changes"], answer: 0 }
+                ]
+            },
+            chemistry: {
+                easy: [
+                    { q: "What is the chemical symbol for Gold?", options: ["Go", "Au", "Gd", "Ag"], answer: 1 },
+                    { q: "What is the most abundant gas in Earth's atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: 2 },
+                    { q: "What is the pH of pure water?", options: ["5", "7", "9", "10"], answer: 1 },
+                    { q: "How many elements are in the periodic table?", options: ["92", "100", "118", "150"], answer: 2 },
+                    { q: "What is table salt's chemical name?", options: ["Sodium Chloride", "Calcium Carbonate", "Potassium Iodide", "Magnesium Sulfate"], answer: 0 }
+                ],
+                medium: [
+                    { q: "What is the atomic number of Carbon?", options: ["4", "6", "8", "12"], answer: 1 },
+                    { q: "What type of bond is NaCl?", options: ["Covalent", "Ionic", "Metallic", "Hydrogen"], answer: 1 },
+                    { q: "What is the molar mass of water (H₂O)?", options: ["16 g/mol", "18 g/mol", "20 g/mol", "22 g/mol"], answer: 1 },
+                    { q: "What is an acid?", options: ["Proton donor", "Proton acceptor", "Electron donor", "Electron acceptor"], answer: 0 },
+                    { q: "What is the noble gas in period 2?", options: ["Helium", "Neon", "Argon", "Krypton"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the hybridization of carbon in CH₄?", options: ["sp", "sp²", "sp³", "sp³d"], answer: 2 },
+                    { q: "What is the Gibbs free energy equation?", options: ["ΔG = ΔH - TΔS", "ΔG = ΔH + TΔS", "ΔG = ΔH / TΔS", "ΔG = TΔS - ΔH"], answer: 0 },
+                    { q: "What is Le Chatelier's principle?", options: ["System shifts to counteract change", "Energy is conserved", "Mass is conserved", "Entropy increases"], answer: 0 },
+                    { q: "What is the rate-determining step?", options: ["Fastest step", "Slowest step", "First step", "Last step"], answer: 1 },
+                    { q: "What is quantum tunneling?", options: ["Particle passing through barrier", "Electron jumping orbits", "Energy transfer", "Chemical bonding"], answer: 0 }
+                ]
+            },
+            biology: {
+                easy: [
+                    { q: "What is the powerhouse of the cell?", options: ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], answer: 2 },
+                    { q: "What is DNA's shape called?", options: ["Single helix", "Double helix", "Triple helix", "Spiral"], answer: 1 },
+                    { q: "How many chambers does the human heart have?", options: ["2", "3", "4", "5"], answer: 2 },
+                    { q: "What do plants produce during photosynthesis?", options: ["Carbon Dioxide", "Nitrogen", "Oxygen", "Hydrogen"], answer: 2 },
+                    { q: "What is the largest bone in the human body?", options: ["Humerus", "Tibia", "Femur", "Fibula"], answer: 2 }
+                ],
+                medium: [
+                    { q: "What are the base pairs in DNA?", options: ["A-T, G-C", "A-G, T-C", "A-C, T-G", "A-U, G-C"], answer: 0 },
+                    { q: "What is the process of cell division called?", options: ["Meiosis", "Mitosis", "Both", "Neither"], answer: 2 },
+                    { q: "What is the function of white blood cells?", options: ["Carry oxygen", "Fight infection", "Clot blood", "Carry nutrients"], answer: 1 },
+                    { q: "What organelle performs photosynthesis?", options: ["Mitochondria", "Nucleus", "Chloroplast", "Ribosome"], answer: 2 },
+                    { q: "How many chromosomes do humans have?", options: ["23", "42", "46", "48"], answer: 2 }
+                ],
+                hard: [
+                    { q: "What is the Krebs cycle?", options: ["Photosynthesis step", "Cellular respiration step", "DNA replication", "Protein synthesis"], answer: 1 },
+                    { q: "What is crossing over in meiosis?", options: ["Chromosome duplication", "Gene exchange between homologous chromosomes", "Cell division", "Mutation"], answer: 1 },
+                    { q: "What is the function of telomeres?", options: ["Protein synthesis", "Protect chromosome ends", "Energy production", "Cell signaling"], answer: 1 },
+                    { q: "What is epigenetics?", options: ["Gene mutations", "Gene expression changes without DNA changes", "Evolutionary theory", "Cell structure"], answer: 1 },
+                    { q: "What is the sodium-potassium pump?", options: ["Passive transport", "Active transport mechanism", "Osmosis", "Diffusion"], answer: 1 }
+                ]
+            },
+            economics: {
+                easy: [
+                    { q: "What does GDP stand for?", options: ["General Domestic Product", "Gross Domestic Product", "Global Domestic Product", "Gross Development Product"], answer: 1 },
+                    { q: "What is inflation?", options: ["Decrease in prices", "Increase in prices", "Stable prices", "Price control"], answer: 1 },
+                    { q: "What is supply and demand?", options: ["A pricing theory", "A company name", "A stock market", "A banking system"], answer: 0 },
+                    { q: "What is a monopoly?", options: ["Many sellers", "Two sellers", "One seller", "No sellers"], answer: 2 },
+                    { q: "What is the study of individual economic behavior called?", options: ["Macroeconomics", "Microeconomics", "Econometrics", "Financial Economics"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is opportunity cost?", options: ["Production cost", "Value of next best alternative", "Fixed cost", "Variable cost"], answer: 1 },
+                    { q: "What is fiscal policy?", options: ["Monetary control", "Government spending and taxation", "Trade agreements", "Price controls"], answer: 1 },
+                    { q: "What is elasticity in economics?", options: ["Price flexibility", "Responsiveness to change", "Market stability", "Production capacity"], answer: 1 },
+                    { q: "What is a recession?", options: ["Economic growth", "Economic decline", "Stable economy", "High inflation"], answer: 1 },
+                    { q: "What does the Federal Reserve control?", options: ["Taxes", "Money supply", "Trade", "Employment"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the Phillips Curve?", options: ["Supply-demand", "Inflation-unemployment tradeoff", "Growth curve", "Production curve"], answer: 1 },
+                    { q: "What is Pareto efficiency?", options: ["Maximum profit", "No one can improve without harming another", "Equal distribution", "Market equilibrium"], answer: 1 },
+                    { q: "What is quantitative easing?", options: ["Tax reduction", "Central bank buying assets", "Interest rate change", "Budget balancing"], answer: 1 },
+                    { q: "What is the Laffer Curve about?", options: ["Supply-demand", "Tax rates and revenue", "Growth rates", "Exchange rates"], answer: 1 },
+                    { q: "What is moral hazard?", options: ["Ethical dilemma", "Risk-taking due to protection", "Market failure", "Information asymmetry"], answer: 1 }
+                ]
+            },
+            psychology: {
+                easy: [
+                    { q: "Who is known as the father of psychoanalysis?", options: ["Carl Jung", "Sigmund Freud", "B.F. Skinner", "Ivan Pavlov"], answer: 1 },
+                    { q: "What is the term for automatic, unconscious responses?", options: ["Reflex", "Instinct", "Habit", "Reaction"], answer: 0 },
+                    { q: "What part of the brain controls emotions?", options: ["Cerebellum", "Hippocampus", "Amygdala", "Cortex"], answer: 2 },
+                    { q: "What is classical conditioning associated with?", options: ["Freud", "Pavlov", "Skinner", "Maslow"], answer: 1 },
+                    { q: "How many stages are in Maslow's hierarchy of needs?", options: ["3", "4", "5", "6"], answer: 2 }
+                ],
+                medium: [
+                    { q: "What is cognitive dissonance?", options: ["Memory loss", "Mental discomfort from conflicting beliefs", "Learning disability", "Personality disorder"], answer: 1 },
+                    { q: "What are the Big Five personality traits?", options: ["OCEAN", "SMART", "ABCDE", "PERMA"], answer: 0 },
+                    { q: "What is operant conditioning?", options: ["Classical learning", "Learning through consequences", "Observational learning", "Insight learning"], answer: 1 },
+                    { q: "What is short-term memory capacity?", options: ["5±2 items", "7±2 items", "9±2 items", "11±2 items"], answer: 1 },
+                    { q: "What is the bystander effect?", options: ["Helping more in groups", "Helping less in groups", "Conformity", "Obedience"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the Stroop effect?", options: ["Memory interference", "Color-word processing conflict", "Attention span", "Learning curve"], answer: 1 },
+                    { q: "What is theory of mind?", options: ["Memory theory", "Understanding others' mental states", "Personality theory", "Cognitive development"], answer: 1 },
+                    { q: "What is neuroplasticity?", options: ["Brain flexibility", "Brain's ability to reorganize", "Neural damage", "Brain size"], answer: 1 },
+                    { q: "What is the confirmation bias?", options: ["Seeking confirming evidence", "Avoiding bias", "Neutral thinking", "Objective reasoning"], answer: 0 },
+                    { q: "What is the Zimbardo prison experiment about?", options: ["Memory", "Power and authority effects", "Learning", "Perception"], answer: 1 }
+                ]
+            },
+            art: {
+                easy: [
+                    { q: "Who painted the Mona Lisa?", options: ["Michelangelo", "Leonardo da Vinci", "Raphael", "Donatello"], answer: 1 },
+                    { q: "What are the primary colors?", options: ["Red, Blue, Yellow", "Red, Green, Blue", "Orange, Purple, Green", "Black, White, Gray"], answer: 0 },
+                    { q: "What art movement was Picasso associated with?", options: ["Impressionism", "Cubism", "Surrealism", "Realism"], answer: 1 },
+                    { q: "What is a sculpture made from?", options: ["Only stone", "Only metal", "Various materials", "Only wood"], answer: 2 },
+                    { q: "What is the study of color theory called?", options: ["Chromatics", "Colorology", "Hue Science", "Pigmentology"], answer: 0 }
+                ],
+                medium: [
+                    { q: "What is chiaroscuro?", options: ["Color mixing", "Light-dark contrast", "Perspective", "Brushwork"], answer: 1 },
+                    { q: "Who painted 'Starry Night'?", options: ["Monet", "Van Gogh", "Renoir", "Cézanne"], answer: 1 },
+                    { q: "What is the Golden Ratio approximately?", options: ["1.414", "1.618", "1.732", "1.828"], answer: 1 },
+                    { q: "What is sfumato?", options: ["Bold outlines", "Soft, gradual transitions", "Bright colors", "Geometric shapes"], answer: 1 },
+                    { q: "What period came after Renaissance?", options: ["Medieval", "Baroque", "Modern", "Classical"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is anamorphosis?", options: ["Abstract art", "Distorted perspective art", "Color technique", "Sculpture method"], answer: 1 },
+                    { q: "What is the Bauhaus movement?", options: ["Painting style", "Design school combining art and craft", "Architecture only", "Sculpture technique"], answer: 1 },
+                    { q: "What is pointillism?", options: ["Large brushstrokes", "Small dots of color", "Abstract shapes", "Realistic details"], answer: 1 },
+                    { q: "Who founded the Dada movement?", options: ["Picasso", "Hugo Ball & Tristan Tzara", "Duchamp alone", "Kandinsky"], answer: 1 },
+                    { q: "What is trompe-l'oeil?", options: ["Abstract art", "Optical illusion art", "Impressionism", "Minimalism"], answer: 1 }
+                ]
+            },
+            music: {
+                easy: [
+                    { q: "How many notes are in an octave?", options: ["6", "7", "8", "12"], answer: 2 },
+                    { q: "What is the symbol at the beginning of a staff?", options: ["Note", "Clef", "Rest", "Time signature"], answer: 1 },
+                    { q: "What is the fastest tempo marking?", options: ["Allegro", "Andante", "Presto", "Adagio"], answer: 2 },
+                    { q: "How many lines are on a musical staff?", options: ["4", "5", "6", "7"], answer: 1 },
+                    { q: "What is a group of musicians called?", options: ["Orchestra", "Band", "Ensemble", "All of these"], answer: 3 }
+                ],
+                medium: [
+                    { q: "What is a major scale pattern?", options: ["W-W-H-W-W-W-H", "W-H-W-W-H-W-W", "H-W-W-H-W-W-W", "W-W-W-H-W-W-H"], answer: 0 },
+                    { q: "What is counterpoint?", options: ["Rhythm pattern", "Multiple independent melodies", "Chord progression", "Volume changes"], answer: 1 },
+                    { q: "What is a tritone interval?", options: ["3 semitones", "4 semitones", "5 semitones", "6 semitones"], answer: 3 },
+                    { q: "What is syncopation?", options: ["Loud-soft pattern", "Off-beat rhythm", "Fast tempo", "Chord change"], answer: 1 },
+                    { q: "What is a cadence?", options: ["Tempo change", "Melodic phrase ending", "Dynamic marking", "Key change"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the Neapolitan sixth chord?", options: ["Major chord", "Flat II chord in first inversion", "Diminished chord", "Augmented sixth"], answer: 1 },
+                    { q: "What is serialism in music?", options: ["Folk music", "12-tone composition technique", "Jazz style", "Baroque form"], answer: 1 },
+                    { q: "What is the circle of fifths?", options: ["Rhythm pattern", "Key relationship diagram", "Chord progression", "Scale pattern"], answer: 1 },
+                    { q: "What is a fugue?", options: ["Dance form", "Contrapuntal composition", "Song form", "Instrumental solo"], answer: 1 },
+                    { q: "What is the Schenkerian analysis?", options: ["Rhythm analysis", "Hierarchical tonal structure analysis", "Chord analysis", "Timbre analysis"], answer: 1 }
+                ]
+            },
+            literature: {
+                easy: [
+                    { q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], answer: 1 },
+                    { q: "What is a haiku?", options: ["A novel", "A short poem", "A play", "An essay"], answer: 1 },
+                    { q: "What is the main character in a story called?", options: ["Antagonist", "Narrator", "Protagonist", "Supporting character"], answer: 2 },
+                    { q: "What is an autobiography?", options: ["Someone else's life story", "Your own life story", "A fictional story", "A poem about life"], answer: 1 },
+                    { q: "What literary device compares using 'like' or 'as'?", options: ["Metaphor", "Simile", "Personification", "Alliteration"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is iambic pentameter?", options: ["5 iambs per line", "10 syllables", "Shakespearean meter", "All of these"], answer: 3 },
+                    { q: "What is a bildungsroman?", options: ["War novel", "Coming-of-age story", "Mystery novel", "Historical fiction"], answer: 1 },
+                    { q: "What is stream of consciousness?", options: ["Dialogue", "Interior monologue narrative", "Third person", "Poetry"], answer: 1 },
+                    { q: "What is an unreliable narrator?", options: ["Honest narrator", "Questionable trustworthy narrator", "Third person", "Omniscient"], answer: 1 },
+                    { q: "What is magical realism?", options: ["Fantasy", "Realistic setting with magical elements", "Science fiction", "Horror"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the difference between story and discourse?", options: ["None", "Story is what happened, discourse is how it's told", "Same thing", "Style difference"], answer: 1 },
+                    { q: "What is metalepsis?", options: ["Metaphor type", "Narrative level transgression", "Plot device", "Character type"], answer: 1 },
+                    { q: "What is the New Criticism approach?", options: ["Historical context focus", "Close reading of text alone", "Author biography", "Reader response"], answer: 1 },
+                    { q: "What is defamiliarization (ostranenie)?", options: ["Making familiar strange", "Translation", "Adaptation", "Modernization"], answer: 0 },
+                    { q: "What is the Freytag pyramid?", options: ["Character development", "Dramatic structure (exposition-climax-resolution)", "Plot twist", "Theme analysis"], answer: 1 }
+                ]
+            },
+            philosophy: {
+                easy: [
+                    { q: "Who is known as the father of Western philosophy?", options: ["Aristotle", "Plato", "Socrates", "Descartes"], answer: 2 },
+                    { q: "What does 'Cogito, ergo sum' mean?", options: ["I think, therefore I am", "I see, therefore I believe", "I know, therefore I exist", "I am, therefore I think"], answer: 0 },
+                    { q: "What is ethics the study of?", options: ["Beauty", "Knowledge", "Right and wrong", "Reality"], answer: 2 },
+                    { q: "Who wrote 'The Republic'?", options: ["Socrates", "Plato", "Aristotle", "Kant"], answer: 1 },
+                    { q: "What is the philosophical study of knowledge called?", options: ["Ontology", "Epistemology", "Metaphysics", "Logic"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is Kant's categorical imperative?", options: ["Consequence-based ethics", "Universal moral law", "Virtue ethics", "Relativism"], answer: 1 },
+                    { q: "What is dualism?", options: ["Two gods", "Mind-body separation", "Two truths", "Binary logic"], answer: 1 },
+                    { q: "What is utilitarianism?", options: ["Greatest happiness principle", "Duty-based ethics", "Virtue ethics", "Divine command"], answer: 0 },
+                    { q: "What is solipsism?", options: ["Only I exist", "God exists", "Nothing exists", "Everything exists"], answer: 0 },
+                    { q: "What is the problem of induction?", options: ["Math problem", "Cannot justify inductive reasoning", "Deduction issue", "Logic fallacy"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is Heidegger's 'Dasein'?", options: ["Being-there", "Nothingness", "God", "Death"], answer: 0 },
+                    { q: "What is the Gettier problem?", options: ["Knowledge definition challenge", "Ethics problem", "Logic puzzle", "Metaphysics question"], answer: 0 },
+                    { q: "What is Nietzsche's 'eternal recurrence'?", options: ["Reincarnation", "Time loop thought experiment", "Historical cycles", "Memory"], answer: 1 },
+                    { q: "What is phenomenology?", options: ["Study of consciousness and experience", "Natural science", "Logic study", "Ethics branch"], answer: 0 },
+                    { q: "What is the veil of ignorance?", options: ["Ignorance is bliss", "Rawls' justice thought experiment", "Skepticism", "Epistemology concept"], answer: 1 }
+                ]
+            },
+            sociology: {
+                easy: [
+                    { q: "What is sociology the study of?", options: ["Individual behavior", "Society and social behavior", "Psychology", "Economics"], answer: 1 },
+                    { q: "What is a social norm?", options: ["A law", "An expected behavior", "A punishment", "A reward"], answer: 1 },
+                    { q: "Who is considered the father of sociology?", options: ["Karl Marx", "Max Weber", "Auguste Comte", "Émile Durkheim"], answer: 2 },
+                    { q: "What is socialization?", options: ["Making friends", "Learning society's norms", "Going to parties", "Being social"], answer: 1 },
+                    { q: "What is a subculture?", options: ["Underground culture", "A group within a larger culture", "Ancient culture", "Pop culture"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is social stratification?", options: ["Social equality", "Hierarchical social arrangement", "Social mobility", "Social interaction"], answer: 1 },
+                    { q: "What is symbolic interactionism?", options: ["Macro theory", "Micro-level meaning-making", "Conflict theory", "Functionalism"], answer: 1 },
+                    { q: "What is the Thomas theorem?", options: ["Survival theory", "If people define situations as real, they are real in consequences", "Social fact theory", "Class struggle"], answer: 1 },
+                    { q: "What is anomie?", options: ["Social cohesion", "Normlessness", "Social order", "Community"], answer: 1 },
+                    { q: "What is ethnocentrism?", options: ["Cultural relativism", "Judging other cultures by your own", "Cultural appreciation", "Multiculturalism"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is Bourdieu's concept of habitus?", options: ["Habitat", "Embodied dispositions and practices", "Social class", "Cultural capital"], answer: 1 },
+                    { q: "What is the looking-glass self?", options: ["Mirror", "Self-concept based on others' perceptions", "Self-reflection", "Identity"], answer: 1 },
+                    { q: "What is structural functionalism?", options: ["Society as interconnected parts", "Conflict theory", "Symbolic interaction", "Social construction"], answer: 0 },
+                    { q: "What is Goffman's dramaturgical analysis?", options: ["Theater study", "Social interaction as performance", "Role theory", "Identity formation"], answer: 1 },
+                    { q: "What is the McDonaldization thesis?", options: ["Fast food impact", "Rationalization of society", "Globalization", "Consumerism"], answer: 1 }
+                ]
+            },
+            astronomy: {
+                easy: [
+                    { q: "What is the closest star to Earth?", options: ["Proxima Centauri", "The Sun", "Sirius", "Alpha Centauri"], answer: 1 },
+                    { q: "How many planets are in our solar system?", options: ["7", "8", "9", "10"], answer: 1 },
+                    { q: "What galaxy do we live in?", options: ["Andromeda", "Milky Way", "Whirlpool", "Triangulum"], answer: 1 },
+                    { q: "What is a light year?", options: ["365 days", "A measure of distance", "A measure of time", "Speed of light"], answer: 1 },
+                    { q: "What is the largest planet in our solar system?", options: ["Saturn", "Neptune", "Jupiter", "Uranus"], answer: 2 }
+                ],
+                medium: [
+                    { q: "What is a supernova?", options: ["New star", "Exploding star", "Black hole", "Nebula"], answer: 1 },
+                    { q: "What is the Kuiper Belt?", options: ["Asteroid region", "Region beyond Neptune", "Galaxy cluster", "Star cluster"], answer: 1 },
+                    { q: "What is redshift?", options: ["Color change", "Light stretched to longer wavelengths", "Star color", "Planet appearance"], answer: 1 },
+                    { q: "What is the Oort Cloud?", options: ["Nebula", "Theoretical comet cloud", "Galaxy", "Star cluster"], answer: 1 },
+                    { q: "What is the event horizon?", options: ["Galaxy edge", "Point of no return around black hole", "Star surface", "Planet orbit"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the Chandrasekhar limit?", options: ["Star size", "Maximum white dwarf mass", "Black hole size", "Galaxy mass"], answer: 1 },
+                    { q: "What is cosmic inflation?", options: ["Universe cooling", "Rapid expansion after Big Bang", "Star formation", "Galaxy collision"], answer: 1 },
+                    { q: "What are Cepheid variables used for?", options: ["Time keeping", "Distance measurement", "Temperature", "Mass calculation"], answer: 1 },
+                    { q: "What is the CMB?", options: ["Cosmic Microwave Background", "Central Milky Belt", "Celestial Mass Body", "Cosmic Magnetic Band"], answer: 0 },
+                    { q: "What is dark energy?", options: ["Black hole energy", "Mysterious force accelerating expansion", "Star fuel", "Galaxy energy"], answer: 1 }
+                ]
+            },
+            medicine: {
+                easy: [
+                    { q: "What is the normal human body temperature in Celsius?", options: ["35°C", "37°C", "39°C", "40°C"], answer: 1 },
+                    { q: "What is the largest organ of the human body?", options: ["Liver", "Brain", "Skin", "Heart"], answer: 2 },
+                    { q: "What does MRI stand for?", options: ["Magnetic Resonance Imaging", "Medical Radiation Imaging", "Molecular Ray Imaging", "Medical Response Indicator"], answer: 0 },
+                    { q: "How many bones are in the adult human body?", options: ["186", "206", "226", "246"], answer: 1 },
+                    { q: "What is the medical term for high blood pressure?", options: ["Hypotension", "Hypertension", "Tachycardia", "Bradycardia"], answer: 1 }
+                ],
+                medium: [
+                    { q: "What is the function of insulin?", options: ["Digest food", "Regulate blood sugar", "Fight infection", "Clot blood"], answer: 1 },
+                    { q: "What is an antibiotic used for?", options: ["Viruses", "Bacteria", "Fungi", "All pathogens"], answer: 1 },
+                    { q: "What is anemia?", options: ["High blood pressure", "Low red blood cells", "High white blood cells", "Blood clotting disorder"], answer: 1 },
+                    { q: "What is the purpose of vaccination?", options: ["Cure disease", "Provide immunity", "Reduce pain", "Increase energy"], answer: 1 },
+                    { q: "What is systolic pressure?", options: ["Heart relaxing", "Heart contracting", "Average pressure", "Diastolic pressure"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the pathophysiology of Type 1 diabetes?", options: ["Insulin resistance", "Autoimmune beta cell destruction", "Liver dysfunction", "Kidney failure"], answer: 1 },
+                    { q: "What is the mechanism of action of statins?", options: ["Increase insulin", "Inhibit HMG-CoA reductase", "Thin blood", "Lower blood pressure"], answer: 1 },
+                    { q: "What is the Virchow's triad?", options: ["Cancer signs", "Thrombosis factors", "Diabetes symptoms", "Heart failure signs"], answer: 1 },
+                    { q: "What is the first-line treatment for anaphylaxis?", options: ["Antihistamine", "Epinephrine", "Steroids", "Oxygen"], answer: 1 },
+                    { q: "What is the Glasgow Coma Scale used for?", options: ["Pain assessment", "Consciousness level", "Mental health", "Blood pressure"], answer: 1 }
+                ]
+            },
+            law: {
+                easy: [
+                    { q: "What is the supreme law of the United States?", options: ["Bill of Rights", "Declaration of Independence", "The Constitution", "Federal Law"], answer: 2 },
+                    { q: "What does 'pro bono' mean?", options: ["For the public good", "For money", "Against the law", "Professional bond"], answer: 0 },
+                    { q: "What is a plaintiff?", options: ["A judge", "Person who brings a lawsuit", "A lawyer", "A defendant"], answer: 1 },
+                    { q: "What are the two main types of law?", options: ["Good and bad", "Civil and criminal", "State and federal", "Written and unwritten"], answer: 1 },
+                    { q: "What is 'habeas corpus'?", options: ["Body of evidence", "Right to a trial", "Have the body (protection from unlawful detention)", "Criminal charges"], answer: 2 }
+                ],
+                medium: [
+                    { q: "What is the difference between a felony and misdemeanor?", options: ["State vs federal", "Severity of crime", "Civil vs criminal", "Intent"], answer: 1 },
+                    { q: "What is 'precedent' in law?", options: ["New law", "Prior case decisions", "Evidence", "Procedure"], answer: 1 },
+                    { q: "What is 'discovery' in legal proceedings?", options: ["Finding evidence", "Pre-trial evidence exchange", "Verdict", "Sentencing"], answer: 1 },
+                    { q: "What is tort law?", options: ["Criminal law", "Civil wrongs and damages", "Contract law", "Property law"], answer: 1 },
+                    { q: "What is 'burden of proof' in criminal cases?", options: ["Preponderance of evidence", "Beyond reasonable doubt", "Clear and convincing", "Probable cause"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the 'fruit of the poisonous tree' doctrine?", options: ["Environmental law", "Evidence from illegal search excluded", "Agricultural law", "Property law"], answer: 1 },
+                    { q: "What is 'stare decisis'?", options: ["Stand by decisions", "New precedent", "Jury decision", "Judge discretion"], answer: 0 },
+                    { q: "What is the difference between void and voidable contracts?", options: ["No difference", "Void is invalid, voidable can be cancelled", "Same meaning", "Time-based"], answer: 1 },
+                    { q: "What is 'mens rea'?", options: ["Physical act", "Guilty mind", "Evidence", "Punishment"], answer: 1 },
+                    { q: "What is the 'reasonable person' standard?", options: ["Average intelligence", "How hypothetical reasonable person would act", "Expert standard", "Professional standard"], answer: 1 }
+                ]
+            },
+            engineering: {
+                easy: [
+                    { q: "What is the study of forces and motion?", options: ["Thermodynamics", "Mechanics", "Kinematics", "Statics"], answer: 1 },
+                    { q: "What material is the strongest in tension?", options: ["Wood", "Concrete", "Steel", "Aluminum"], answer: 2 },
+                    { q: "What does CAD stand for?", options: ["Computer Aided Design", "Computer Automated Drawing", "Creative Art Design", "Central Axis Design"], answer: 0 },
+                    { q: "What is the branch of engineering dealing with electricity?", options: ["Mechanical", "Civil", "Electrical", "Chemical"], answer: 2 },
+                    { q: "What force opposes motion between surfaces?", options: ["Gravity", "Tension", "Friction", "Compression"], answer: 2 }
+                ],
+                medium: [
+                    { q: "What is the Young's modulus?", options: ["Strength measure", "Stiffness measure", "Hardness measure", "Ductility measure"], answer: 1 },
+                    { q: "What is the first law of thermodynamics?", options: ["Entropy increases", "Energy conservation", "Heat flows hot to cold", "Absolute zero"], answer: 1 },
+                    { q: "What is a truss?", options: ["Beam type", "Structural framework of triangles", "Foundation", "Column"], answer: 1 },
+                    { q: "What is Ohm's Law in electrical engineering?", options: ["V=IR", "P=IV", "E=mc²", "F=ma"], answer: 0 },
+                    { q: "What is the purpose of a heat exchanger?", options: ["Generate heat", "Transfer heat between fluids", "Store heat", "Measure heat"], answer: 1 }
+                ],
+                hard: [
+                    { q: "What is the Mohr's circle used for?", options: ["Electrical circuits", "Stress transformation", "Heat transfer", "Fluid flow"], answer: 1 },
+                    { q: "What is the Navier-Stokes equation?", options: ["Heat equation", "Fluid motion equation", "Stress equation", "Electrical equation"], answer: 1 },
+                    { q: "What is fatigue failure?", options: ["Sudden overload", "Repeated cyclic loading failure", "Corrosion", "Impact failure"], answer: 1 },
+                    { q: "What is the Reynolds number?", options: ["Heat transfer", "Flow regime indicator", "Stress ratio", "Efficiency"], answer: 1 },
+                    { q: "What is finite element analysis (FEA)?", options: ["Chemistry method", "Numerical problem-solving technique", "Programming language", "Testing method"], answer: 1 }
+                ]
+            }
+        };
+
+        const motivationalMessages = [
+            "You're doing amazing! 🌟",
+            "Stay focused! Success is near! 💪",
+            "Knowledge is power! 📚",
+            "Every minute counts! ⏰",
+            "Your future self will thank you! 🎯",
+            "Keep pushing! You got this! 🚀",
+            "Excellence is a habit! ✨",
+            "Focus on progress, not perfection! 💫",
+            "Learning never exhausts the mind! 🧠",
+            "Study hard now, celebrate later! 🎉",
+            "You're building your future right now! 🏗️",
+            "Small steps lead to big achievements! 👣",
+            "Concentrate on what you're learning! 🎓",
+            "Your dedication will pay off! 💎",
+            "Stay strong, stay focused! 💥",
+            "The harder you work, the luckier you get! 🍀",
+            "Believe in yourself! You can do it! ⭐",
+            "Focus is your superpower! ⚡",
+            "Make every study minute count! ⏱️",
+            "Success starts with this moment! 🌅"
+        ];
+
+        function startStudySession() {
+            studySubject = document.getElementById('subject').value;
+            studyDifficulty = document.getElementById('difficulty').value;
+            studyDuration = parseInt(document.getElementById('studyTime').value);
+
+            if (!studyDuration || studyDuration < 1) {
+                alert('Please enter a valid study time!');
+                return;
+            }
+
+            remainingSeconds = studyDuration * 60;
+            
+            document.getElementById('setupScreen').classList.remove('active');
+            document.getElementById('studyScreen').classList.add('active');
+            
+            const subjectText = document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text;
+            const difficultyText = document.getElementById('difficulty').options[document.getElementById('difficulty').selectedIndex].text;
+            document.getElementById('currentSubject').textContent = `${subjectText} (${difficultyText})`;
+
+            startTimer();
+            rotateMotivationalMessages();
+        }
+
+        function startTimer() {
+            const circumference = 2 * Math.PI * 110; // radius is 110
+            const timerCircle = document.getElementById('timerCircle');
+            timerCircle.style.strokeDasharray = circumference;
+            timerCircle.style.strokeDashoffset = 0;
+            
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerDisplay();
+                updateProgressBar();
+                updateCircularProgress();
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    saveStats();
+                    showQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function updateProgressBar() {
+            const totalSeconds = studyDuration * 60;
+            const progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function updateCircularProgress() {
+            const circumference = 2 * Math.PI * 110;
+            const totalSeconds = studyDuration * 60;
+            const progress = (remainingSeconds / totalSeconds);
+            const offset = circumference * (1 - progress);
+            document.getElementById('timerCircle').style.strokeDashoffset = offset;
+        }
+
+        function rotateMotivationalMessages() {
+            let index = 0;
+            setInterval(() => {
+                document.getElementById('motivationalMsg').textContent = motivationalMessages[index];
+                index = (index + 1) % motivationalMessages.length;
+            }, 5000);
+        }
+
+        function showQuiz() {
+            const subjectQuestions = questions[studySubject][studyDifficulty];
+            currentQuestion = subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)];
+
+            document.getElementById('studyScreen').classList.remove('active');
+            document.getElementById('quizScreen').classList.add('active');
+
+            document.getElementById('questionText').textContent = currentQuestion.q;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            selectedAnswer = null;
+        }
+
+        function selectOption(index) {
+            selectedAnswer = index;
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((opt, i) => {
+                if (i === index) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer!');
+                return;
+            }
+
+            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+
+            const resultContent = document.getElementById('resultContent');
+
+            if (selectedAnswer === currentQuestion.answer) {
+                // Success - show confetti effect
+                createConfetti();
+                
+                // Check for achievements
+                const achievement = checkAchievements();
+                const achievementHTML = achievement ? `
+                    <div style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%); padding: 15px; border-radius: 15px; margin: 20px 0; border: 2px solid #fbbf24; box-shadow: 0 0 30px rgba(251, 191, 36, 0.4); animation: emojiPop 0.5s ease-out;">
+                        <div style="text-align: center; font-size: 2em; margin-bottom: 5px;">🏆</div>
+                        <div style="text-align: center; color: #fcd34d; font-weight: 700; font-size: 1.1em;">${achievement}</div>
+                    </div>
+                ` : '';
+                
+                resultContent.innerHTML = `
+                    <div class="emoji">🎉</div>
+                    <div class="result-message correct">
+                        🌟 Perfect! You really studied! 🌟
+                    </div>
+                    ${achievementHTML}
+                    <h2 style="text-align: center; color: #6ee7b7; margin: 25px 0; font-size: 2em; text-shadow: 0 0 30px rgba(16, 185, 129, 0.6);">
+                        Phone Unlocked! 🔓
+                    </h2>
+                    <div class="study-info" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.3) 100%); border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.3);">
+                        <h3>📊 Session Complete!</h3>
+                        <p>You studied ${studySubject.toUpperCase()} for ${studyDuration} minutes</p>
+                    </div>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-value">${localStorage.getItem('studySessions') || 1}</div>
+                            <div class="stat-label">Total Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${localStorage.getItem('studyMinutes') || studyDuration}</div>
+                            <div class="stat-label">Total Minutes</div>
+                        </div>
+                    </div>
+                    <div class="stats-container" style="grid-template-columns: 1fr;">
+                        <div class="stat-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%); border: 1px solid rgba(251, 191, 36, 0.4);">
+                            <div class="stat-value" style="background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${localStorage.getItem('studyStreak') || 1}</div>
+                            <div class="stat-label" style="color: #fde68a;">🔥 Day Streak</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 1.1em; color: #cbd5e0; margin: 20px 0;">
+                        Great job on your study session! Keep up the excellent work! 💪
+                    </p>
+                    <button onclick="resetApp()" style="margin-top: 20px;">🔄 Start New Session</button>
+                `;
+            } else {
+                resultContent.innerHTML = `
+                    <div class="emoji">😔</div>
+                    <div class="result-message incorrect">
+                        ❌ Oops! That's not quite right.
+                    </div>
+                    <div style="background: rgba(251, 191, 36, 0.2); padding: 20px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: 0 5px 20px rgba(0,0,0,0.3);">
+                        <p style="text-align: center; margin: 0; font-size: 1.15em; color: #fcd34d;">
+                            <strong>The correct answer was:</strong><br>
+                            <span style="font-size: 1.3em; color: #fde68a; font-weight: 700;">${currentQuestion.options[currentQuestion.answer]}</span>
+                        </p>
+                    </div>
+                    <p style="text-align: center; color: #cbd5e0; margin: 20px 0; font-size: 1.05em;">
+                        Don't worry! Let's try another question to prove you studied.
+                    </p>
+                    <button onclick="showQuiz()">🔄 Try Another Question</button>
+                    <button onclick="resetApp()" style="margin-top: 10px; background: linear-gradient(135deg, #4b5563 0%, #374151 100%);">Start Over</button>
+                `;
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#a78bfa', '#ec4899', '#7c3aed', '#db2777', '#fbbf24', '#10b981'];
+            for(let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.zIndex = '1000';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.boxShadow = `0 0 10px ${colors[Math.floor(Math.random() * colors.length)]}`;
+                    document.body.appendChild(confetti);
+                    
+                    const fallDuration = Math.random() * 3 + 2;
+                    const rotation = Math.random() * 360;
+                    
+                    confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight}px) rotate(${rotation}deg)`, opacity: 0 }
+                    ], {
+                        duration: fallDuration * 1000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    });
+                    
+                    setTimeout(() => confetti.remove(), fallDuration * 1000);
+                }, i * 30);
+            }
+        }
+
+        function resetApp() {
+            clearInterval(timerInterval);
+            document.getElementById('resultScreen').classList.remove('active');
+            document.getElementById('setupScreen').classList.add('active');
+            document.getElementById('studyTime').value = 30;
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('timerCircle').style.strokeDashoffset = 0;
+            loadStats(); // Reload stats to show updated values
+        }
+    </script>
+</body>
+</html>
